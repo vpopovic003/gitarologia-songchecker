@@ -1,0 +1,21 @@
+{
+  "name": "gitarologia-songchecker",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Live preview tool for Gitarologia coded songs — paste a coded song on the left, see the exported-PDF output on the right in real time.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-pdf/renderer": "^4.5.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.7"
+  }
+}
