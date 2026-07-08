@@ -26,6 +26,8 @@ import {
   CONTENT_PADDING_V,
   SPACER_HEIGHT,
   COLUMN_MARGIN_H,
+  BODY_FONT_SIZE,
+  CHORD_SUPER_FONT_SIZE,
   CHORD_COLOR,
   GRAD_FROM,
   GRAD_TO,
@@ -38,7 +40,7 @@ import {
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
-    fontFamily: 'Roboto'
+    fontFamily: 'DejaVuSansCondensed'
   },
   headerWrapper: {
     position: 'relative',
@@ -115,14 +117,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   chord: {
-    fontSize: 11,
+    fontSize: BODY_FONT_SIZE,
     fontWeight: 400,
     color: CHORD_COLOR,
     height: 14,
     paddingRight: 4
   },
   lyric: {
-    fontSize: 11,
+    fontSize: BODY_FONT_SIZE,
     color: '#1a1a1a'
   },
   spacer: {
@@ -177,7 +179,7 @@ const SongRow = ({ pairs }) => {
                   <Text
                     key={idx}
                     style={{
-                      fontSize: 8,
+                      fontSize: CHORD_SUPER_FONT_SIZE,
                       fontWeight: 400,
                       color: CHORD_COLOR,
                       marginBottom: 4
@@ -189,7 +191,7 @@ const SongRow = ({ pairs }) => {
                   <Text
                     key={idx}
                     style={{
-                      fontSize: 11,
+                      fontSize: BODY_FONT_SIZE,
                       fontWeight: 400,
                       color: CHORD_COLOR
                     }}

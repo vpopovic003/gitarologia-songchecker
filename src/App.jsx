@@ -4,12 +4,12 @@ import SongPdf from './SongPdf.jsx';
 import { convertSong, collapseEmptyRows, detectLayout, paginateRows } from './convert.js';
 
 // Font files live in /public/fonts and are served under the configured base path.
-const FONT_REGULAR = `${import.meta.env.BASE_URL}fonts/Roboto-Regular.ttf`;
-const FONT_BOLD = `${import.meta.env.BASE_URL}fonts/Roboto-Bold.ttf`;
+const FONT_REGULAR = `${import.meta.env.BASE_URL}fonts/DejaVuSansCondensed-Regular.ttf`;
+const FONT_BOLD = `${import.meta.env.BASE_URL}fonts/DejaVuSansCondensed-Bold.ttf`;
 
-// Register the same Roboto faces the production PDF uses (once).
+// Register the same DejaVu Sans Condensed faces the production PDF uses (once).
 Font.register({
-  family: 'Roboto',
+  family: 'DejaVuSansCondensed',
   fonts: [
     { src: FONT_REGULAR, fontWeight: 400 },
     { src: FONT_BOLD, fontWeight: 700 }

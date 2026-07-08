@@ -12,16 +12,17 @@
  */
 
 // ── Layout constants (from pdfGenerator.js) ────────────────────────────────
-export const CONTENT_ROW_HEIGHT = 32;
-export const CONTENT_ROW_HEIGHT_NO_CHORD = 17;
+export const CONTENT_ROW_HEIGHT = 30;
+export const CONTENT_ROW_HEIGHT_NO_CHORD = 16;
 export const SPACER_HEIGHT = 12;
 export const COLUMN_MARGIN_H = 6;
-export const WIDTH_SAFETY_BUFFER = 4;
+export const BODY_FONT_SIZE = 10;
+export const CHORD_SUPER_FONT_SIZE = 7;
 export const CHORD_COLOR = '#9333ea';
 export const GRAD_FROM = '#01eedd';
 export const GRAD_TO = '#9333ea';
 
-export const CONTENT_PADDING_H = 24;
+export const CONTENT_PADDING_H = 0;
 export const CONTENT_PADDING_V = 22;
 export const A4_WIDTH = 595;
 export const A4_HEIGHT = 841.89;
@@ -147,7 +148,7 @@ export const convertSong = (chords, locale, offset = 0) => {
 // Measurement + layout + pagination (port of utils/songbook/pdfGenerator.js)
 // ═══════════════════════════════════════════════════════════════════════════
 
-const METRICS_FONT_FAMILY = 'RobotoPdfMetrics';
+const METRICS_FONT_FAMILY = 'DejaVuSansCondensedPdfMetrics';
 let metricsCtx = null;
 let metricsFontPromise = null;
 let metricsFontFailed = false;
@@ -224,11 +225,14 @@ function measureChordWidth(chordText) {
     chordText.includes('b') ||
     chordText.includes('#');
   if (!hasSuper) {
-    return measureTextPt(chordText, 11) + 4;
+    return measureTextPt(chordText, BODY_FONT_SIZE) + 4;
   }
   let width = 0;
   for (const seg of splitChordSegments(chordText)) {
-    width += measureTextPt(seg.text, seg.isSuper ? 8 : 11);
+    width += measureTextPt(
+      seg.text,
+      seg.isSuper ? CHORD_SUPER_FONT_SIZE : BODY_FONT_SIZE
+    );
   }
   return width + 4;
 }
@@ -439,17 +443,22 @@ export async function detectLayout(rows, fontUrl) {
   for (const row of rows) {
     if (isEmptyRow(row)) continue;
     let rowWidth = 0;
-    for (const pair of row) {
+    for (let i = 0; i < row.length; i++) {
+      const pair = row[i];
       const chord = (pair.chord || '').trim();
-      const lyricVisible = (pair.lyric || '').trim().length > 0;
+      // Trailing whitespace on the last pair renders past the last visible
+      // glyph, so trim it before measuring.
+      let lyric = pair.lyric || '';
+      if (i === row.length - 1) lyric = lyric.replace(/\s+$/, '');
+      const lyricVisible = lyric.trim().length > 0;
       const chordWidth = measureChordWidth(chord);
-      const lyricWidth = lyricVisible ? measureTextPt(pair.lyric, 11) : 0;
+      const lyricWidth = lyricVisible ? measureTextPt(lyric, BODY_FONT_SIZE) : 0;
       rowWidth += Math.max(chordWidth, lyricWidth);
     }
     if (rowWidth > maxRowWidth) maxRowWidth = rowWidth;
   }
 
-  const neededWidth = Math.ceil(maxRowWidth) + WIDTH_SAFETY_BUFFER;
+  const neededWidth = Math.ceil(maxRowWidth);
   const contentAreaWidth = A4_WIDTH - 2 * CONTENT_PADDING_H;
 
   const twoColAvailable = contentAreaWidth / 2 - 2 * COLUMN_MARGIN_H;
@@ -480,7 +489,8 @@ export function formatTransposeText(
     typeof courseOffset === 'number' &&
     !isNaN(courseOffset) &&
     offset === courseOffset;
-  return `${transposeLabel}: ${sign}${offset}${
-    isCourseOffset ? ` (${courseLabel})` : ''
+  const value = `${sign}${offset}`;
+  return `${transposeLabel}: ${
+    isCourseOffset ? `${courseLabel} (${value})` : value
   }`;
 }
